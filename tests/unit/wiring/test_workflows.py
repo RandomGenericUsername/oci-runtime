@@ -12,6 +12,7 @@ from oci_runtime.domain.types import (
     BuildContext,
     NetworkInfo,
     PortMapping,
+    PruneResult,
     RunConfig,
     VolumeInfo,
     VolumeMount,
@@ -221,7 +222,7 @@ class TestContainerLifecycle:
 
     def test_container_prune_returns_real_data(self, docker_engine: CliRuntime):
         result = docker_engine.containers.prune()
-        assert result == {"deleted": 0, "reclaimed_bytes": 0}
+        assert result == PruneResult()
 
 
 class TestVolumeLifecycle:

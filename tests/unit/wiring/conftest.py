@@ -7,7 +7,7 @@ from oci_runtime.adapters.managers.network import CliNetworkManager
 from oci_runtime.adapters.managers.volume import CliVolumeManager
 from oci_runtime.domain.enums import RuntimeKind
 from oci_runtime.domain.types import RuntimePreference
-from oci_runtime.ports.capabilities import RuntimeCapabilities
+from oci_runtime.domain.capabilities import RuntimeCapabilities
 from tests.helpers.mock_parsers import (
     MockContainerParser,
     MockImageParser,
@@ -27,7 +27,7 @@ def docker_caps(docker_pref):
     return RuntimeCapabilities(
         supports_log_drivers=True,
         tar_entry_name="Dockerfile",
-        default_build_flags=["--quiet"],
+        default_build_flags=("--quiet",),
     )
 
 

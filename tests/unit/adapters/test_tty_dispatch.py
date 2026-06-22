@@ -5,8 +5,8 @@ import pytest
 from oci_runtime.adapters.managers.container import CliContainerManager
 from oci_runtime.ports.parsers import ParsingError
 from oci_runtime.domain.exceptions import ContainerRuntimeError
-from oci_runtime.domain.types import RunConfig
-from oci_runtime.ports.capabilities import RuntimeCapabilities
+from oci_runtime.domain.types import PruneResult, RunConfig
+from oci_runtime.domain.capabilities import RuntimeCapabilities
 from oci_runtime.ports.parsers import ContainerParser
 from oci_runtime.domain.types import RawExecResult
 from oci_runtime.ports.transport import Transport
@@ -19,8 +19,8 @@ class _MockParser(ContainerParser):
         raise ParsingError(raw=raw)
     def parse_list(self, raw: str):
         return []
-    def parse_prune(self, raw: str):
-        return {"deleted": 0, "reclaimed_bytes": 0}
+    def parse_prune(self, raw: str) -> PruneResult:
+        return PruneResult()
     def is_not_found_error(self, stderr: str):
         return False
 
@@ -61,9 +61,8 @@ class TestTtyDispatch:
         assert result == "abc123"
 
     def test_detach_and_tty_mutually_exclusive(self, manager, transport):
-        config = RunConfig(image="alpine", command=["bash"], tty=True, detach=True)
-        with pytest.raises(ContainerRuntimeError, match="mutually exclusive"):
-            manager.run(config)
+        with pytest.raises(ValueError, match="detach=True is mutually exclusive with tty/auto_tty"):
+            RunConfig(image="alpine", command=["bash"], tty=True, detach=True)
 
     @patch("oci_runtime.adapters.managers.container.run_pty")
     def test_auto_tty_true_with_isatty_calls_execute_pty(self, mock_run_pty, manager, transport):
@@ -78,7 +77,7 @@ class TestTtyDispatch:
     def test_auto_tty_true_without_isatty_calls_streaming(self, manager, transport):
         tty_detector = FakeTtyDetector(is_tty=False)
         mgr = CliContainerManager(transport, _MockParser(), RuntimeCapabilities(), streaming=manager._streaming, tty_detector=tty_detector)
-        config = RunConfig(image="alpine", command=["echo", "hi"], auto_tty=True, detach=True)
+        config = RunConfig(image="alpine", command=["echo", "hi"], auto_tty=True, detach=False)
         result = mgr.run(config)
         manager._streaming.stream.assert_called_once()
         assert result == "abc123"
@@ -118,7 +117,7 @@ class TestTtyEdgeCases:
 
     @patch("oci_runtime.adapters.managers.container.run_pty")
     def test_effective_tty_with_default_flags(self, mock_run_pty, manager, transport):
-        caps = RuntimeCapabilities(default_run_flags=["--userns=keep-id"])
+        caps = RuntimeCapabilities(default_run_flags=("--userns=keep-id",))
         parser = _MockParser()
         streaming = MagicMock(spec=StreamingTransport)
         streaming.stream.return_value = RawExecResult(returncode=0, stdout=b"abc123", stderr=b"")
