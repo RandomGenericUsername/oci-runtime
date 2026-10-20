@@ -1,0 +1,30 @@
+schema: spec-driven
+
+# Project context (constraints an agent cannot infer from the code).
+context: |
+  `oci-runtime` is the shared container-engine abstraction for the dotfiles CLI
+  toolchain (spine AD-1/AD-2): ports for engines, containers, images, networks,
+  volumes, transports and parsers; Docker/Podman adapters; a composition root
+  (`RuntimeFactory`). One package, repo root = package root:
+  `src/oci_runtime/`, `tests/` at the top level, no nested project roots. It has
+  no runtime dependencies and imports no sibling repo. It owns no Dockerfile and
+  no CLI verb: the CLI repos own their images, and provisioning owns the pin,
+  clone and build trigger (AD-5, AD-7). Its one cross-repo contract is the
+  build-context locator (AD-6): a build context root contains `pyproject.toml`
+  AND `src/<import_name>/`; import name = distribution name with `-` -> `_`.
+  Consumers are csg and weg, pinned by immutable git tag. Repo contract in
+  AGENTS.md (CLAUDE.md symlinks there) applies to all artifacts.
+
+# Per-artifact rules (from mu; the evidence rule is not optional).
+rules:
+  proposal:
+    - "Every claim carries Evidence (file path + lines, commit SHA, URL + quote, or prototype command + observed output) and a one-command Verify step; mark Evidence MISSING rather than stating unproven claims as fact."
+    - "Always state what is out of scope."
+  specs:
+    - "Each requirement states its acceptance check (command to run + expected result)."
+    - "Cite the source of each requirement (prior-art path, user statement, or prototype output)."
+  design:
+    - "Include a verification plan - what prototype or test validates each key decision, with exact commands."
+    - "No component without an evidence-backed reason to exist."
+  tasks:
+    - "Each task ends with an observable check (command + expected output); break tasks into chunks of max 2 hours."
