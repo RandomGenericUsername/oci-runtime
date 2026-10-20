@@ -73,7 +73,10 @@ from oci_runtime.ports.pty_transport import PtyTransport  # noqa: F401
 from oci_runtime.domain.naming import engine_qualified_image  # noqa: F401
 from oci_runtime.factory import RuntimeFactory, RuntimeFactoryConfig  # noqa: F401
 from oci_runtime.source_locator import (  # noqa: F401
+    BuildContextRoot,
     SourceRoot,
+    import_name_for,
+    resolve_build_context,
     resolve_source_root,
 )
 
@@ -81,6 +84,7 @@ __all__ = sorted(
     [
         "BinaryResolver",
         "BuildContext",
+        "BuildContextRoot",
         "CancellationToken",
         "CompositeCancellationToken",
         "ContainerEngine",
@@ -101,6 +105,7 @@ __all__ = sorted(
         "ImageParser",
         "ImagePullAccessDeniedError",
         "ImageRuntimeError",
+        "import_name_for",
         "NetworkError",
         "NetworkInfo",
         "NetworkManager",
@@ -143,6 +148,7 @@ __all__ = sorted(
         "VolumeParser",
         "VolumeRuntimeError",
         "compose_tokens",
+        "resolve_build_context",
         "resolve_source_root",
     ]
 )

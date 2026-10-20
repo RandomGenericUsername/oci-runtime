@@ -1,9 +1,16 @@
 [project]
 name = "oci-runtime"
-version = "0.4.0"
-description = "Runtime-agnostic OCI container management with hexagonal architecture"
+version = "0.5.0"
+description = "Runtime-agnostic OCI container management with hexagonal architecture; owns the build-context locator for the dotfiles CLI toolchain"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 dependencies = []
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Typing :: Typed",
+]
 
 [dependency-groups]
 dev = [
@@ -13,11 +20,23 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/oci_runtime"]
+
+# The harness trees (.agents/, _bmad/, .opencode/, openspec/, tickets/) are not
+# package content; keep them out of the sdist.
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "pyproject.toml",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "src/oci_runtime",
+    "tests",
+]
 
 [tool.uv.sources]
 
