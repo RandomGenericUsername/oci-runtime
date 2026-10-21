@@ -10,7 +10,7 @@
 
 ## Requirements
 
-- [REQ-001-repo-birth](./REQ-001-repo-birth/ticket.md) — Birth the oci-runtime repo (mu-strict), cut the AD-6 build-context API over, and tag v0.5.0 | `in-progress` | openspec: repo-birth
+(none)
 
 ## Bugs
 
@@ -29,3 +29,5 @@
 (none)
 
 ## Done (links only, newest last)
+
+- [REQ-001-repo-birth](./REQ-001-repo-birth/ticket.md) — Birth the oci-runtime repo (mu-strict), cut the AD-6 build-context API over, and tag v0.5.0 | `done` | openspec: repo-birth (archived)
